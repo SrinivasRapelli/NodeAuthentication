@@ -14,7 +14,7 @@ dotEnv.config()
 const PORT = process.env.PORT || 8000
 
 app.set('view engine', 'ejs')
-app.use(express.static('public'))
+//app.use(express.static('public'))
 app.use(express.urlencoded({extended : true}))
 
 
@@ -55,7 +55,7 @@ app.get('/signup',(req, res)=>{
 })
 
 app.get('/login', (req, res)=>{
-    res.render('login')
+    res.render('login', { error: null })
 })
 
 app.get('/dashboard', checkAuth , (req, res)=>{
@@ -112,8 +112,7 @@ app.post('/user-login', async(req, res)=>{
     const user = await User.findOne({email})
 
     if(!user){
-        return res.redirect('/signup')
-    }
+        return res.render('login', { error: 'User does not exist. Please sign up.' });    }
 
     const checkPassword = await bcrypt.compare(password, user.password)
 
